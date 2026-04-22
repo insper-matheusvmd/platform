@@ -1,0 +1,24 @@
+[submodule "api/account"]
+	path = api/account
+	url = https://github.com/insper-matheusvmd/account.git
+[submodule "api/account-service"]
+	path = api/account-service
+	url = https://github.com/insper-matheusvmd/account-service.git
+[submodule "api/gateway-service"]
+	path = api/gateway-service
+	url = https://github.com/insper-matheusvmd/gateway-service.git
+[submodule "api/api/auth"]
+	path = api/api/auth
+	url = https://github.com/insper-matheusvmd/auth.git
+[submodule "api/auth"]
+	path = api/auth
+	url = https://github.com/insper-matheusvmd/auth.git
+[submodule "api/auth-service"]
+	path = api/auth-service
+	url = https://github.com/insper-matheusvmd/auth-service.git
+[submodule "api/api/jenkins"]
+	path = api/api/jenkins
+	url = https://github.com/insper-matheusvmd/jenkins.git
+[submodule "api/jenkins"]
+	path = api/jenkins
+	url = https://github.com/insper-matheusvmd/jenkins.git
