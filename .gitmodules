@@ -24,7 +24,7 @@
 	url = https://github.com/insper-matheusvmd/jenkins.git
 [submodule "api/product"]
 	path = api/product
-	url = https://github.com/matheusvmd/product.git
+	url = https://github.com/insper-matheusvmd/product.git
 [submodule "api/order"]
 	path = api/order
-	url = https://github.com/matheusvmd/order.git
+	url = https://github.com/insper-matheusvmd/order.git
