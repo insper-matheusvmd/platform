@@ -25,10 +25,13 @@ services:
       DATABASE_DB: ${DB_NAME:-store}
       DATABASE_USERNAME: ${DB_USER:-store}
       DATABASE_PASSWORD: ${DB_PASSWORD:-devpass}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     deploy:
-      replicas: 1
+      replicas: 2
     depends_on:
       - db
+      - redis
 
   auth:
     build:
@@ -43,6 +46,36 @@ services:
     depends_on:
       - account
 
+  product-service:
+    build:
+      context: ./product
+      dockerfile: Dockerfile
+    hostname: product-service
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_DB: ${DB_NAME:-store}
+      DATABASE_USERNAME: ${DB_USER:-store}
+      DATABASE_PASSWORD: ${DB_PASSWORD:-devpass}
+    depends_on:
+      - db
+
+  order-service:
+    build:
+      context: ./order
+      dockerfile: Dockerfile
+    hostname: order-service
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_DB: ${DB_NAME:-store}
+      DATABASE_USERNAME: ${DB_USER:-store}
+      DATABASE_PASSWORD: ${DB_PASSWORD:-devpass}
+      PRODUCT_SERVICE_URL: http://product-service:8080
+    depends_on:
+      - db
+      - product-service
+
   gateway:
     build:
       context: ./gateway-service
@@ -52,6 +85,8 @@ services:
     depends_on:
       - account
       - auth
+      - product-service
+      - order-service
 
   prometheus:
     image: prom/prometheus:latest
@@ -81,3 +116,15 @@ services:
       - $SETUP/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - gateway
+
+  redis:
+    image: redis:7-alpine
+    hostname: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+volumes:
+  redis_data:

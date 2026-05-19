@@ -22,3 +22,9 @@
 [submodule "api/jenkins"]
 	path = api/jenkins
 	url = https://github.com/insper-matheusvmd/jenkins.git
+[submodule "api/product"]
+	path = api/product
+	url = https://github.com/matheusvmd/product.git
+[submodule "api/order"]
+	path = api/order
+	url = https://github.com/matheusvmd/order.git
