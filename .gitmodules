@@ -28,3 +28,6 @@
 [submodule "api/order"]
 	path = api/order
 	url = https://github.com/insper-matheusvmd/order.git
+[submodule "api/exchange-service"]
+	path = api/exchange-service
+	url = https://github.com/insper-matheusvmd/exchange-service.git

@@ -76,6 +76,12 @@ services:
       - db
       - product-service
 
+  exchange-service:
+    build:
+      context: ./exchange-service
+      dockerfile: Dockerfile
+    hostname: exchange-service
+
   gateway:
     build:
       context: ./gateway-service
@@ -87,6 +93,7 @@ services:
       - auth
       - product-service
       - order-service
+      - exchange-service
 
   prometheus:
     image: prom/prometheus:latest
