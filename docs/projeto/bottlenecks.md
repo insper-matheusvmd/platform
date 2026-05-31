@@ -4,7 +4,7 @@
 
 O `order-service` depende do `product-service` para criar um pedido. Para cada item recebido, o serviço chama `GET /products/{id}` antes de persistir o pedido.
 
-Essa decisão cria um bottleneck intencional: a criação do pedido fica limitada pela disponibilidade e latência do serviço de produtos. Em troca, o pedido nunca é criado com um produto inexistente e sempre registra o preço retornado pelo catálogo.
+Essa decisão cria um bottleneck intencional: a criação do pedido fica limitada pela disponibilidade e latência do serviço de produtos. Em troca, o pedido nunca é criado com um produto inexistente, valida estoque disponível e sempre registra o preço retornado pelo catálogo.
 
 Arquivo principal:
 
@@ -15,6 +15,9 @@ Trecho:
 
 ```java
 ProductSnapshotOut product = fetchProduct(itemIn.idProduct().trim());
+if (product.stock() < itemIn.quantity()) {
+    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient stock for product: " + product.id());
+}
 BigDecimal unitPrice = scale(product.price());
 ```
 
@@ -67,4 +70,3 @@ return repository.findAll(Sort.by(Sort.Direction.ASC, "name"))
     .map(this::toOut)
     .toList();
 ```
-

@@ -1,5 +1,5 @@
 site_name: Plataforma de Microsservicos
-site_author: Matheus Vicco
+site_author: Matheus Vicco e Helio Henrique Navarro
 site_url: https://insper-matheusvmd.github.io/platform/
 repo_url: https://github.com/insper-matheusvmd/platform
 repo_name: insper-matheusvmd/platform
@@ -131,12 +131,11 @@ nav:
     - Resumo das atividades: atividades/index.md
     - Product Service: modulos/product.md
     - Order Service: modulos/order.md
+    - Exchange Service: modulos/exchange.md
     - Código fonte das atividades: atividades/codigo-fonte.md
   - Projeto:
     - Documentação do projeto: projeto/index.md
     - Bottlenecks implementados: projeto/bottlenecks.md
     - Código fonte do projeto: projeto/codigo-fonte.md
   - Entrega:
-    - Repositórios utilizados: entrega/repositorios.md
-    - Apresentação: entrega/apresentacao.md
     - Vídeo: entrega/video.md

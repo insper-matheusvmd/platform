@@ -9,19 +9,21 @@
 | Auth library | `api/auth` |
 | Auth Service | `api/auth-service` |
 | Gateway Service | `api/gateway-service` |
+| Exchange Service | `api/exchange-service` |
 | Product Service | `api/product` |
 | Order Service | `api/order` |
+| PostgreSQL Service | `api/postgres-service` |
 | Infraestrutura local | `api/compose.yaml` |
 | Prometheus | `api/setup/prometheus/prometheus.yml` |
 | Grafana | `api/setup/grafana` |
 | Nginx | `api/setup/nginx/nginx.conf` |
 
-## Código sob minha responsabilidade
+## Serviços documentados em detalhe
 
-Os serviços implementados individualmente nesta entrega foram:
+Os serviços documentados em detalhe nesta entrega são:
 
 - `api/product`
 - `api/order`
+- `api/exchange-service`
 
-As páginas [Product Service](../modulos/product.md) e [Order Service](../modulos/order.md) detalham endpoints, modelos, migrações e trechos principais.
-
+As páginas [Product Service](../modulos/product.md), [Order Service](../modulos/order.md) e [Exchange Service](../modulos/exchange.md) detalham endpoints, modelos, integrações, deploy e trechos principais.

@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-O `order-service` registra pedidos feitos por uma conta autenticada. Para criar um pedido, ele recebe os itens, consulta o `product-service`, valida se cada produto existe e calcula os totais.
+O `order-service` registra pedidos feitos por uma conta autenticada. Para criar um pedido, ele recebe os itens, consulta o `product-service`, valida se cada produto existe, verifica estoque disponível, define o status inicial e calcula os totais.
 
 ## Tecnologias
 
@@ -57,6 +57,7 @@ Regras de validação:
 {
   "id": "uuid-do-pedido",
   "createdAt": "2026-05-20T10:30:00",
+  "status": "CREATED",
   "items": [
     {
       "id": "uuid-do-item",
@@ -91,6 +92,8 @@ catch (FeignException.NotFound ex) {
 }
 ```
 
+Caso a quantidade pedida seja maior do que o estoque retornado pelo `product-service`, a criação também retorna erro de negócio.
+
 ## Persistência
 
 O serviço usa o schema `orders` e duas tabelas principais:
@@ -103,6 +106,7 @@ CREATE TABLE IF NOT EXISTS orders.orders (
     id VARCHAR(36) PRIMARY KEY,
     account_id VARCHAR(36) NOT NULL,
     created_at TIMESTAMP NOT NULL,
+    status VARCHAR(32) NOT NULL,
     total_usd NUMERIC(12, 2) NOT NULL
 );
 
@@ -116,6 +120,8 @@ CREATE TABLE IF NOT EXISTS orders.order_items (
 );
 ```
 
+A evolução `V2__add_status_to_orders.sql` adiciona o campo `status` em bancos já existentes.
+
 ## Arquivos principais
 
 | Arquivo | Função |
@@ -126,17 +132,30 @@ CREATE TABLE IF NOT EXISTS orders.order_items (
 | `api/order/src/main/java/store/order/ProductClient.java` | Cliente Feign para o `product-service`. |
 | `api/order/src/main/java/store/order/OrderRepository.java` | Acesso ao banco. |
 | `api/order/src/main/java/store/order/OrderModel.java` | Entidade JPA do pedido. |
+| `api/order/src/main/java/store/order/OrderStatus.java` | Status do pedido. |
 | `api/order/src/main/java/store/order/OrderItemModel.java` | Entidade JPA dos itens. |
 | `api/order/src/main/java/store/order/CreateOrderIn.java` | DTO de entrada do pedido. |
 | `api/order/src/main/java/store/order/CreateOrderItemIn.java` | DTO de entrada dos itens. |
 | `api/order/src/main/resources/db/migration/V1__create_orders.sql` | Migração do banco. |
+| `api/order/src/main/resources/db/migration/V2__add_status_to_orders.sql` | Evolução com status do pedido. |
 | `api/order/src/main/resources/application.yaml` | Configuração do serviço. |
+| `api/order/Jenkinsfile` | Pipeline de build, push da imagem e deploy no EKS. |
+| `api/order/k8s/deployment.yaml` | Deployment Kubernetes do serviço. |
+| `api/order/k8s/service.yaml` | Service interno `order-service`. |
+
+## Deploy e CI/CD
+
+O pipeline do `order-service` gera a imagem Docker `iquenavarro/order-service`, publica no Docker Hub e aplica os manifests no cluster EKS `eks-store`. No Kubernetes, o serviço recebe a variável `PRODUCT_SERVICE_URL` com o valor `http://product-service:8080`, mantendo a comunicação interna com o catálogo de produtos.
 
 ## Trecho de código principal
 
 ```java
 for (CreateOrderItemIn itemIn : in.items()) {
     ProductSnapshotOut product = fetchProduct(itemIn.idProduct().trim());
+    if (product.stock() < itemIn.quantity()) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient stock for product: " + product.id());
+    }
+
     BigDecimal unitPrice = scale(product.price());
     BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(itemIn.quantity()))
         .setScale(2, RoundingMode.HALF_UP);
@@ -151,4 +170,3 @@ for (CreateOrderItemIn itemIn : in.items()) {
     total = total.add(lineTotal).setScale(2, RoundingMode.HALF_UP);
 }
 ```
-
