@@ -2,7 +2,7 @@
 
 ## Link do vídeo
 
-TODO - inserir link do vídeo de 2 a 3 minutos.
+[https://www.youtube.com/watch?v=MRmNmR7yCIE](https://www.youtube.com/watch?v=MRmNmR7yCIE)
 
 ## Roteiro sugerido para 2-3 minutos
 
