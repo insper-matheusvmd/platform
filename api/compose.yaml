@@ -72,9 +72,11 @@ services:
       DATABASE_USERNAME: ${DB_USER:-store}
       DATABASE_PASSWORD: ${DB_PASSWORD:-devpass}
       PRODUCT_SERVICE_URL: http://product-service:8080
+      EXCHANGE_SERVICE_URL: http://exchange-service:8080
     depends_on:
       - db
       - product-service
+      - exchange-service
 
   exchange-service:
     build:
